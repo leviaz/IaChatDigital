@@ -1,0 +1,25 @@
+<section class="auth-page id-container">
+  <h1>Entrar</h1>
+  <p class="lead">Acesse sua conta para continuar aprendendo com segurança.</p>
+
+  <form class="auth-card" [formGroup]="form" (ngSubmit)="enviar()">
+    <label for="email">E-mail</label>
+    <input id="email" class="id-input" type="email" formControlName="email" autocomplete="email" />
+
+    <label for="senha">Senha</label>
+    <input id="senha" class="id-input" type="password" formControlName="senha" autocomplete="current-password" />
+
+    @if (erro) {
+      <p class="alert alert-danger" role="alert">{{ erro }}</p>
+    }
+
+    <button class="id-btn" type="submit" [disabled]="loading">
+      {{ loading ? 'Entrando...' : 'Entrar' }}
+    </button>
+  </form>
+
+  <p class="switch">
+    Ainda não tem conta?
+    <a routerLink="/cadastro">Criar conta</a>
+  </p>
+</section>

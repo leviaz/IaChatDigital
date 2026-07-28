@@ -1,0 +1,29 @@
+.inicio {
+  padding: var(--id-space-5) 0;
+  display: grid;
+  gap: var(--id-space-3);
+}
+
+.lead {
+  margin: 0;
+  font-size: var(--id-font-size-lg);
+  max-width: 40rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--id-space-2);
+}
+
+.info {
+  padding: var(--id-space-4);
+  border: 2px solid var(--id-color-border);
+  border-radius: var(--id-radius);
+  background: var(--id-color-surface);
+  max-width: 36rem;
+}
+
+.info h2 {
+  margin-top: 0;
+}

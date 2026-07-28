@@ -1,0 +1,43 @@
+.auth-page {
+  padding: var(--id-space-5) 0;
+  display: grid;
+  gap: var(--id-space-3);
+  max-width: 36rem;
+}
+
+.lead {
+  margin: 0;
+  font-size: var(--id-font-size-lg);
+}
+
+.auth-card {
+  display: grid;
+  gap: var(--id-space-2);
+  padding: var(--id-space-4);
+  border: 2px solid var(--id-color-border);
+  border-radius: var(--id-radius);
+  background: var(--id-color-surface);
+}
+
+label {
+  font-weight: 700;
+  font-size: var(--id-font-size-lg);
+}
+
+.check {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  font-weight: 600;
+}
+
+.check input {
+  width: 1.4rem;
+  height: 1.4rem;
+  margin-top: 0.2rem;
+  flex: 0 0 auto;
+}
+
+.switch {
+  font-size: var(--id-font-size-lg);
+}

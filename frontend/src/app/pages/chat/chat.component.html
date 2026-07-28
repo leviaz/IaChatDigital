@@ -1,0 +1,145 @@
+<section class="chat-page id-container">
+  <header class="chat-header">
+    <h1>Pergunte à assistente</h1>
+    <p>Cada chat guarda um assunto. Abra um novo quando quiser começar do zero.</p>
+  </header>
+
+  <div class="chat-layout">
+    <aside class="historico" aria-label="Histórico de chats">
+      <button class="id-btn novo-chat" type="button" (click)="novoChat()" [disabled]="loading">
+        Novo chat
+      </button>
+
+      <h2>Seus chats</h2>
+
+      @if (chats.length === 0) {
+        <p class="vazio">Nenhum chat ainda.</p>
+      } @else {
+        <ul>
+          @for (chat of chats; track chat.id) {
+            <li>
+              <div class="hist-row" [class.active]="chatAtivoId === chat.id">
+                <button type="button" class="hist-item" (click)="abrirChat(chat.id)">
+                  <span class="hist-pergunta">{{ chat.titulo }}</span>
+                  <time>{{ chat.dataAtualizacao | date: 'dd/MM HH:mm' }}</time>
+                </button>
+                <button
+                  type="button"
+                  class="hist-del"
+                  title="Apagar chat"
+                  aria-label="Apagar chat"
+                  (click)="excluirChat($event, chat.id)"
+                >
+                  ×
+                </button>
+              </div>
+            </li>
+          }
+        </ul>
+      }
+    </aside>
+
+    <div class="painel">
+      <div class="painel-titulo">
+        <h2>{{ tituloAtivo }}</h2>
+      </div>
+
+      <div #threadEl class="thread" aria-live="polite">
+        @if (mensagens.length === 0 && !loading) {
+          <div class="empty-state">
+            <p>Olá! Em que posso ajudar hoje?</p>
+            <p class="empty-hint">Escolha uma sugestão abaixo ou digite sua pergunta.</p>
+          </div>
+        }
+
+        @for (item of mensagens; track item.id) {
+          <article class="turno" [attr.data-id]="item.id">
+            <div class="bolha bolha-user">
+              <span class="papel">Você</span>
+              <p>{{ item.pergunta }}</p>
+            </div>
+
+            <div class="bolha bolha-ia">
+              <span class="papel">Assistente</span>
+              <pre>{{ item.resposta }}</pre>
+              <p class="meta">
+                Fonte: {{ item.provider }}
+                @if (item.usouMock) {
+                  (modo demonstração)
+                }
+              </p>
+            </div>
+
+            <div class="feedback">
+              <p>Esta resposta ajudou você?</p>
+              <div class="feedback-actions">
+                <button
+                  type="button"
+                  class="id-btn id-btn--secondary"
+                  [class.selected]="item.feedbackGostou === true"
+                  (click)="feedback(item, true)"
+                >
+                  Sim
+                </button>
+                <button
+                  type="button"
+                  class="id-btn id-btn--secondary"
+                  [class.selected]="item.feedbackGostou === false"
+                  (click)="feedback(item, false)"
+                >
+                  Não
+                </button>
+              </div>
+              @if (feedbackMensagemId === item.id && feedbackMsg) {
+                <p class="feedback-msg" role="status">{{ feedbackMsg }}</p>
+              }
+            </div>
+          </article>
+        }
+
+        @if (loading) {
+          <div class="bolha bolha-ia typing" role="status">
+            <span class="papel">Assistente</span>
+            <p>Preparando uma resposta clara para você...</p>
+          </div>
+        }
+
+        @if (erro) {
+          <p class="alert alert-danger" role="alert">{{ erro }}</p>
+        }
+      </div>
+
+      <footer class="composer">
+        <div class="sugestoes" aria-label="Sugestões">
+          @for (s of sugestoes; track s) {
+            <button type="button" class="chip" (click)="usarSugestao(s)" [disabled]="loading">
+              {{ s }}
+            </button>
+          }
+        </div>
+
+        <label class="sr-only" for="pergunta">Sua pergunta</label>
+        <div class="composer-bar">
+          <textarea
+            id="pergunta"
+            class="id-input pergunta"
+            rows="2"
+            [(ngModel)]="pergunta"
+            [disabled]="loading"
+            placeholder="Digite sua pergunta..."
+            (keydown)="onKeydown($event)"
+          ></textarea>
+          <button
+            class="id-btn send-btn"
+            type="button"
+            (click)="enviar()"
+            [disabled]="loading || !pergunta.trim()"
+          >
+            {{ loading ? '...' : 'Enviar' }}
+          </button>
+        </div>
+        <p class="composer-hint">Enter envia · Shift+Enter pula linha</p>
+      </footer>
+    </div>
+  </div>
+</section>

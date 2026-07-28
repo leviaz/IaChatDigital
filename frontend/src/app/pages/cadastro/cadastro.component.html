@@ -1,0 +1,33 @@
+<section class="auth-page id-container">
+  <h1>Criar conta</h1>
+  <p class="lead">Só precisamos de nome, e-mail e uma senha fácil de lembrar.</p>
+
+  <form class="auth-card" [formGroup]="form" (ngSubmit)="enviar()">
+    <label for="nome">Nome</label>
+    <input id="nome" class="id-input" type="text" formControlName="nome" autocomplete="name" />
+
+    <label for="email">E-mail</label>
+    <input id="email" class="id-input" type="email" formControlName="email" autocomplete="email" />
+
+    <label for="senha">Senha (mínimo 6 caracteres)</label>
+    <input id="senha" class="id-input" type="password" formControlName="senha" autocomplete="new-password" />
+
+    <label class="check">
+      <input type="checkbox" formControlName="consentimentoLgpd" />
+      Autorizo o uso dos meus dados para esta conta (LGPD).
+    </label>
+
+    @if (erro) {
+      <p class="alert alert-danger" role="alert">{{ erro }}</p>
+    }
+
+    <button class="id-btn" type="submit" [disabled]="loading">
+      {{ loading ? 'Criando...' : 'Criar conta' }}
+    </button>
+  </form>
+
+  <p class="switch">
+    Já tem conta?
+    <a routerLink="/login">Entrar</a>
+  </p>
+</section>

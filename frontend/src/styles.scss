@@ -1,0 +1,24 @@
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap");
+@import "./styles/tokens";
+@import "bootstrap/scss/bootstrap";
+
+/* Sobrescreve bases do Bootstrap para o público idoso */
+body {
+  font-family: var(--id-font-family);
+  font-size: var(--id-font-size-base);
+  line-height: var(--id-line-height);
+  color: var(--id-color-text);
+}
+
+.btn {
+  min-height: var(--id-touch-min);
+  font-size: var(--id-font-size-lg);
+  font-weight: 700;
+  padding: 0.7rem 1.2rem;
+}
+
+.form-control {
+  min-height: var(--id-touch-min);
+  font-size: var(--id-font-size-lg);
+  border-width: 2px;
+}

@@ -1,0 +1,45 @@
+.site-header {
+  padding: var(--id-space-4) 0;
+  border-bottom: 2px solid var(--id-color-border);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.header-inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--id-space-3);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: inline-block;
+  margin: 0;
+  font-size: var(--id-font-size-hero);
+  font-weight: 700;
+  color: var(--id-color-primary);
+  text-decoration: none;
+}
+
+.tagline {
+  margin: 0.25rem 0 0;
+  font-size: var(--id-font-size-lg);
+  color: var(--id-color-text-muted);
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--id-space-2);
+  align-items: center;
+}
+
+.user {
+  font-size: var(--id-font-size-lg);
+  font-weight: 700;
+  margin-right: 0.25rem;
+}
+
+main {
+  min-height: 70vh;
+}

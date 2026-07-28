@@ -1,0 +1,29 @@
+.auth-page {
+  padding: var(--id-space-5) 0;
+  display: grid;
+  gap: var(--id-space-3);
+  max-width: 36rem;
+}
+
+.lead {
+  margin: 0;
+  font-size: var(--id-font-size-lg);
+}
+
+.auth-card {
+  display: grid;
+  gap: var(--id-space-2);
+  padding: var(--id-space-4);
+  border: 2px solid var(--id-color-border);
+  border-radius: var(--id-radius);
+  background: var(--id-color-surface);
+}
+
+label {
+  font-weight: 700;
+  font-size: var(--id-font-size-lg);
+}
+
+.switch {
+  font-size: var(--id-font-size-lg);
+}

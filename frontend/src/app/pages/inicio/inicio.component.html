@@ -1,0 +1,23 @@
+<section class="inicio id-container">
+  <h1>Olá, {{ usuario?.nome || 'bem-vindo(a)' }}!</h1>
+  <p class="lead">
+    Tire dúvidas sobre PIX, WhatsApp, bancos, golpes e SUS com respostas em passos simples.
+  </p>
+
+  <div class="actions">
+    <a class="id-btn" routerLink="/chat">Fazer uma pergunta</a>
+    <button class="id-btn id-btn--secondary" type="button" (click)="sair()">Sair</button>
+    <button class="id-btn id-btn--secondary" type="button" (click)="excluirConta()" [disabled]="excluindo">
+      {{ excluindo ? 'Excluindo...' : 'Excluir minha conta' }}
+    </button>
+  </div>
+
+  @if (mensagem) {
+    <p class="alert alert-warning" role="status">{{ mensagem }}</p>
+  }
+
+  <article class="info">
+    <h2>Sua conta</h2>
+    <p><strong>E-mail:</strong> {{ usuario?.email }}</p>
+  </article>
+</section>
