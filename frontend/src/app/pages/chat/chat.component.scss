@@ -317,6 +317,12 @@
   font-size: 0.95rem;
 }
 
+.praticar-link {
+  font-size: var(--id-font-size-lg);
+  font-weight: 700;
+  width: fit-content;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

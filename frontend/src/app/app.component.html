@@ -9,6 +9,8 @@
       @if (autenticado) {
         <span class="user">Olá, {{ nome }}</span>
         <a class="id-btn id-btn--secondary" routerLink="/inicio" routerLinkActive="active">Início</a>
+        <a class="id-btn id-btn--secondary" routerLink="/biblioteca" routerLinkActive="active">Biblioteca</a>
+        <a class="id-btn id-btn--secondary" routerLink="/praticar" routerLinkActive="active">Praticar</a>
         <a class="id-btn" routerLink="/chat" routerLinkActive="active">Perguntar</a>
         <button class="id-btn id-btn--secondary" type="button" (click)="sair()">Sair</button>
       } @else {

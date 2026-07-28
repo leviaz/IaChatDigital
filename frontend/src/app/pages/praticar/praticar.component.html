@@ -1,0 +1,60 @@
+<section class="praticar id-container">
+  <header>
+    <h1>Praticar</h1>
+    <p>Responda com calma. Depois você vê se acertou e por quê.</p>
+    @if (pontuacao) {
+      <p class="score">
+        Acertos: {{ pontuacao.acertos }} · Nível: {{ pontuacao.nivelAtual }} · Tema: {{ categoria }}
+      </p>
+    }
+  </header>
+
+  @if (loading) {
+    <p class="status" role="status">Preparando uma pergunta para você...</p>
+  }
+
+  @if (erro) {
+    <p class="alert alert-danger" role="alert">{{ erro }}</p>
+    <button class="id-btn" type="button" (click)="gerar()">Tentar de novo</button>
+  }
+
+  @if (exercicio && !loading) {
+    <article class="card">
+      <p class="meta">Nível {{ exercicio.nivelDificuldade }} · Fonte: {{ exercicio.provider }}</p>
+      <h2>{{ exercicio.pergunta }}</h2>
+
+      <div class="alts" role="group" aria-label="Alternativas">
+        @for (alt of exercicio.alternativas; track alt) {
+          <button
+            type="button"
+            class="id-btn id-btn--secondary alt"
+            [class.selected]="escolhida === alt"
+            [class.correta]="resultado && letra(alt) === resultado.respostaCorreta"
+            [class.errada]="resultado && escolhida === alt && !resultado.acertou"
+            [disabled]="!!resultado || enviando"
+            (click)="responder(alt)"
+          >
+            {{ alt }}
+          </button>
+        }
+      </div>
+
+      @if (resultado) {
+        <div class="feedback" [class.ok]="resultado.acertou" [class.nok]="!resultado.acertou" role="status">
+          <p class="resultado-titulo">
+            {{ resultado.acertou ? 'Muito bem! Você acertou.' : 'Quase! Veja a resposta certa.' }}
+          </p>
+          <p>Resposta correta: {{ resultado.respostaCorreta }}</p>
+          <pre>{{ resultado.explicacao }}</pre>
+          <p class="meta">Acertos neste tema: {{ resultado.acertosTotais }} · Nível atual: {{ resultado.nivelAtual }}</p>
+        </div>
+
+        <div class="acoes">
+          <button class="id-btn" type="button" (click)="gerar()">Próxima pergunta</button>
+          <a class="id-btn id-btn--secondary" routerLink="/biblioteca">Voltar à biblioteca</a>
+          <a class="id-btn id-btn--secondary" routerLink="/chat">Perguntar à assistente</a>
+        </div>
+      }
+    </article>
+  }
+</section>

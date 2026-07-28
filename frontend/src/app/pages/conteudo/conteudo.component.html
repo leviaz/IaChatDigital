@@ -1,0 +1,41 @@
+<section class="conteudo-page id-container">
+  @if (conteudo) {
+    <a class="voltar" [routerLink]="['/biblioteca', conteudo.categoriaSlug]">
+      ← Voltar para {{ conteudo.categoriaNome }}
+    </a>
+
+    <article class="card">
+      <p class="tipo">{{ conteudo.tipo }} · {{ conteudo.categoriaNome }}</p>
+      <h1>{{ conteudo.titulo }}</h1>
+      <pre class="corpo">{{ conteudo.corpo }}</pre>
+
+      @if (conteudo.urlMidia) {
+        <p>
+          <a [href]="conteudo.urlMidia" target="_blank" rel="noopener noreferrer">Abrir mídia relacionada</a>
+        </p>
+      }
+    </article>
+
+    <div class="acoes">
+      <a
+        class="id-btn"
+        routerLink="/chat"
+        [queryParams]="{ novo: '1', pergunta: perguntaSugestao }"
+      >
+        Perguntar à IA sobre isso
+      </a>
+      <a
+        class="id-btn id-btn--secondary"
+        routerLink="/praticar"
+        [queryParams]="{ categoria: conteudo.categoriaSlug, conteudoId: conteudo.id }"
+      >
+        Quer praticar?
+      </a>
+      <a class="id-btn id-btn--secondary" routerLink="/biblioteca">Ver outras categorias</a>
+    </div>
+  }
+
+  @if (erro) {
+    <p class="alert alert-danger" role="alert">{{ erro }}</p>
+  }
+</section>

@@ -112,21 +112,23 @@ Opcional: `ollama pull llama3.2:1b` — sem isso, a API usa mock educativo.
 
 ### Dados
 
-- Seed das 8 categorias do PRD: PIX, WhatsApp, Aplicativos Bancários, Internet, Redes Sociais, Golpes Virtuais, Governo Digital, SUS
-- Modelo `Conteudo`: título, tipo (artigo/vídeo/imagem/FAQ), categoria, corpo/URL
+- [x] Seed das 8 categorias do PRD
+- [x] Modelo `Conteudo`: título, tipo (artigo/vídeo/imagem/FAQ), categoria, corpo/URL
 
 ### Backend
 
-- `GET /categorias`
-- `GET /conteudos?categoria=`
+- [x] `GET /api/categorias`
+- [x] `GET /api/categorias/{slug}`
+- [x] `GET /api/conteudos?categoria=`
+- [x] `GET /api/conteudos/{id}`
 
 ### Frontend
 
-- Home com categorias em cards grandes
-- Página de conteúdo + FAQ
-- Link “Perguntar à IA sobre isso” → chat pré-preenchido
+- [x] `/biblioteca` com cards grandes
+- [x] `/biblioteca/:slug` lista de conteúdos
+- [x] `/conteudo/:id` + botão “Perguntar à IA sobre isso”
 
-**Critério de saída:** **RF08**; pelo menos 2–3 itens por categoria crítica (PIX, Golpes, WhatsApp, SUS).
+**Critério de saída:** **RF08**. ✅ (PIX, Golpes, WhatsApp e SUS com 3 itens cada)
 
 ---
 
@@ -134,17 +136,25 @@ Opcional: `ollama pull llama3.2:1b` — sem isso, a API usa mock educativo.
 
 ### Backend
 
-- Geração via IA a partir de categoria/conteúdo (JSON estruturado)
-- Persistência de `Exercicio` + `Resultado` (**RF06**, **RF07**)
-- Regra simples de dificuldade (nível sobe após N acertos)
+- [x] Geração via IA (JSON) com fallback mock por categoria
+- [x] Persistência `Exercicio` + `Resultado` (**RF06**, **RF07**)
+- [x] Dificuldade sobe após 3/5 acertos seguidos (níveis 1–3)
 
 ### Frontend
 
-- Fluxo pós-conteúdo ou pós-chat: “Quer praticar?”
-- Alternativas A/B/C com botões grandes
-- Feedback imediato + pontuação
+- [x] `/praticar` com alternativas A/B/C grandes
+- [x] Feedback imediato + pontuação
+- [x] “Quer praticar?” no conteúdo e no chat
 
-**Critério de saída:** exercício gerado automaticamente e pontuação salva.
+**Critério de saída:** exercício gerado e pontuação salva. ✅
+
+**Endpoints**
+
+| Método | Rota | Auth |
+|--------|------|------|
+| POST | `/api/exercicios/gerar` | Sim |
+| POST | `/api/exercicios/{id}/responder` | Sim |
+| GET | `/api/exercicios/pontuacao` | Sim |
 
 ---
 

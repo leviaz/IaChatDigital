@@ -1,0 +1,37 @@
+.cat-page {
+  padding: var(--id-space-5) 0;
+  display: grid;
+  gap: var(--id-space-3);
+}
+
+.voltar {
+  font-size: var(--id-font-size-lg);
+  font-weight: 700;
+  width: fit-content;
+}
+
+header h1 {
+  margin: 0 0 0.5rem;
+}
+
+header p {
+  margin: 0;
+  font-size: var(--id-font-size-lg);
+  max-width: 40rem;
+}
+
+.lista {
+  display: grid;
+  gap: var(--id-space-2);
+}
+
+.item h2 {
+  margin: 0.35rem 0 0;
+  font-size: var(--id-font-size-xl);
+}
+
+.tipo {
+  display: inline-block;
+  font-weight: 700;
+  color: var(--id-color-primary);
+}

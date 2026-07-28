@@ -1,0 +1,42 @@
+.biblio {
+  padding: var(--id-space-5) 0;
+  display: grid;
+  gap: var(--id-space-4);
+}
+
+.biblio-header {
+  display: grid;
+  gap: var(--id-space-2);
+  max-width: 44rem;
+}
+
+.biblio-header h1 {
+  margin: 0;
+}
+
+.biblio-header p {
+  margin: 0;
+  font-size: var(--id-font-size-lg);
+}
+
+.grid {
+  display: grid;
+  gap: var(--id-space-3);
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+.cat-card h2 {
+  margin: 0 0 0.5rem;
+  font-size: var(--id-font-size-xl);
+  color: var(--id-color-primary);
+}
+
+.cat-card p {
+  margin: 0 0 0.75rem;
+  font-size: var(--id-font-size-lg);
+}
+
+.meta {
+  font-weight: 700;
+  color: var(--id-color-text-muted);
+}

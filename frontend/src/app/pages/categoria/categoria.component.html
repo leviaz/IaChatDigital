@@ -1,0 +1,27 @@
+<section class="cat-page id-container">
+  <a class="voltar" routerLink="/biblioteca">← Voltar à biblioteca</a>
+
+  @if (categoria) {
+    <header>
+      <h1>{{ categoria.nome }}</h1>
+      <p>{{ categoria.descricao }}</p>
+    </header>
+  }
+
+  @if (erro) {
+    <p class="alert alert-danger" role="alert">{{ erro }}</p>
+  }
+
+  <div class="lista">
+    @for (item of conteudos; track item.id) {
+      <a class="id-card-interactive item" [routerLink]="['/conteudo', item.id]">
+        <span class="tipo">{{ tipoLabel(item.tipo) }}</span>
+        <h2>{{ item.titulo }}</h2>
+      </a>
+    }
+  </div>
+
+  @if (categoria && conteudos.length === 0 && !erro) {
+    <p>Ainda não há conteúdos nesta categoria.</p>
+  }
+</section>

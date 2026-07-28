@@ -1,0 +1,45 @@
+.conteudo-page {
+  padding: var(--id-space-5) 0;
+  display: grid;
+  gap: var(--id-space-3);
+  max-width: 48rem;
+}
+
+.voltar {
+  font-size: var(--id-font-size-lg);
+  font-weight: 700;
+  width: fit-content;
+}
+
+.card {
+  padding: var(--id-space-4);
+  border: 2px solid var(--id-color-border);
+  border-radius: var(--id-radius);
+  background: var(--id-color-surface);
+  display: grid;
+  gap: var(--id-space-2);
+}
+
+.tipo {
+  margin: 0;
+  font-weight: 700;
+  color: var(--id-color-primary);
+}
+
+.card h1 {
+  margin: 0;
+}
+
+.corpo {
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: inherit;
+  font-size: var(--id-font-size-lg);
+  line-height: var(--id-line-height);
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--id-space-2);
+}

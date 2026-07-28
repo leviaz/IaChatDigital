@@ -97,3 +97,15 @@ Se o Ollama estiver desligado, a API usa **respostas mock educativas** automatic
 - [x] Histórico (`GET /api/conversas`)
 - [x] Feedback Sim/Não (`POST /api/feedback`)
 - [x] Tela `/chat` com bolhas, sugestões e histórico
+
+## Fase 3 — status
+
+- [x] 8 categorias + seed educativo
+- [x] Telas `/biblioteca`, `/biblioteca/:slug`, `/conteudo/:id`
+- [x] Link “Perguntar à IA sobre isso”
+
+## Fase 4 — status
+
+- [x] Geração de exercícios + pontuação
+- [x] Tela `/praticar`
+- [x] Links “Quer praticar?” no conteúdo e no chat

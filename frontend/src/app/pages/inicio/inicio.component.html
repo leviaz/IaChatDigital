@@ -1,11 +1,12 @@
 <section class="inicio id-container">
   <h1>Olá, {{ usuario?.nome || 'bem-vindo(a)' }}!</h1>
   <p class="lead">
-    Tire dúvidas sobre PIX, WhatsApp, bancos, golpes e SUS com respostas em passos simples.
+    Aprenda com a biblioteca ou pergunte à assistente sobre PIX, WhatsApp, bancos, golpes e SUS.
   </p>
 
   <div class="actions">
-    <a class="id-btn" routerLink="/chat">Fazer uma pergunta</a>
+    <a class="id-btn" routerLink="/biblioteca">Abrir biblioteca</a>
+    <a class="id-btn id-btn--secondary" routerLink="/chat">Fazer uma pergunta</a>
     <button class="id-btn id-btn--secondary" type="button" (click)="sair()">Sair</button>
     <button class="id-btn id-btn--secondary" type="button" (click)="excluirConta()" [disabled]="excluindo">
       {{ excluindo ? 'Excluindo...' : 'Excluir minha conta' }}

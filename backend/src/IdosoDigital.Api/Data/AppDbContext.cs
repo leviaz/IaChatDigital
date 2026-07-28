@@ -11,6 +11,8 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<Exercicio> Exercicios => Set<Exercicio>();
     public DbSet<Resultado> Resultados => Set<Resultado>();
     public DbSet<Feedback> Feedbacks => Set<Feedback>();
+    public DbSet<Categoria> Categorias => Set<Categoria>();
+    public DbSet<Conteudo> Conteudos => Set<Conteudo>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -59,6 +61,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             entity.Property(x => x.Pergunta).HasMaxLength(1000).IsRequired();
             entity.Property(x => x.AlternativasJson).HasMaxLength(4000).IsRequired();
             entity.Property(x => x.RespostaCorreta).HasMaxLength(10).IsRequired();
+            entity.Property(x => x.Explicacao).HasMaxLength(2000).IsRequired();
             entity.Property(x => x.Categoria).HasMaxLength(80).IsRequired();
         });
 
@@ -89,6 +92,30 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
                 .HasForeignKey(x => x.ConversaId)
                 .OnDelete(DeleteBehavior.Cascade);
             entity.HasIndex(x => new { x.UsuarioId, x.ConversaId }).IsUnique();
+        });
+
+        modelBuilder.Entity<Categoria>(entity =>
+        {
+            entity.ToTable("Categorias");
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Nome).HasMaxLength(80).IsRequired();
+            entity.Property(x => x.Slug).HasMaxLength(80).IsRequired();
+            entity.Property(x => x.Descricao).HasMaxLength(300).IsRequired();
+            entity.HasIndex(x => x.Slug).IsUnique();
+        });
+
+        modelBuilder.Entity<Conteudo>(entity =>
+        {
+            entity.ToTable("Conteudos");
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Titulo).HasMaxLength(180).IsRequired();
+            entity.Property(x => x.Corpo).HasMaxLength(8000).IsRequired();
+            entity.Property(x => x.UrlMidia).HasMaxLength(500);
+            entity.Property(x => x.Tipo).HasConversion<string>().HasMaxLength(20);
+            entity.HasOne(x => x.Categoria)
+                .WithMany(x => x.Conteudos)
+                .HasForeignKey(x => x.CategoriaId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

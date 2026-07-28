@@ -49,6 +49,7 @@ public sealed class Exercicio
     /// <summary>Alternativas em JSON, ex.: ["A) ...","B) ...","C) ..."].</summary>
     public string AlternativasJson { get; set; } = "[]";
     public string RespostaCorreta { get; set; } = string.Empty;
+    public string Explicacao { get; set; } = string.Empty;
     public string Categoria { get; set; } = string.Empty;
     public int NivelDificuldade { get; set; } = 1;
 
@@ -77,4 +78,36 @@ public sealed class Feedback
 
     public Usuario Usuario { get; set; } = null!;
     public Conversa Conversa { get; set; } = null!;
+}
+
+public sealed class Categoria
+{
+    public Guid Id { get; set; }
+    public string Nome { get; set; } = string.Empty;
+    public string Slug { get; set; } = string.Empty;
+    public string Descricao { get; set; } = string.Empty;
+    public int Ordem { get; set; }
+
+    public ICollection<Conteudo> Conteudos { get; set; } = [];
+}
+
+public enum TipoConteudo
+{
+    Artigo = 1,
+    Video = 2,
+    Imagem = 3,
+    Faq = 4
+}
+
+public sealed class Conteudo
+{
+    public Guid Id { get; set; }
+    public Guid CategoriaId { get; set; }
+    public string Titulo { get; set; } = string.Empty;
+    public TipoConteudo Tipo { get; set; }
+    public string Corpo { get; set; } = string.Empty;
+    public string? UrlMidia { get; set; }
+    public int Ordem { get; set; }
+
+    public Categoria Categoria { get; set; } = null!;
 }

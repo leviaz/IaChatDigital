@@ -1,0 +1,25 @@
+<section class="biblio id-container">
+  <header class="biblio-header">
+    <h1>Biblioteca de conteúdo</h1>
+    <p>Escolha um tema para aprender com textos simples, FAQs e orientações seguras.</p>
+    <a class="id-btn" routerLink="/chat" [queryParams]="{ novo: '1' }">Perguntar à assistente</a>
+  </header>
+
+  @if (loading) {
+    <p>Carregando...</p>
+  }
+
+  @if (erro) {
+    <p class="alert alert-danger" role="alert">{{ erro }}</p>
+  }
+
+  <div class="grid">
+    @for (cat of categorias; track cat.id) {
+      <a class="id-card-interactive cat-card" [routerLink]="['/biblioteca', cat.slug]">
+        <h2>{{ cat.nome }}</h2>
+        <p>{{ cat.descricao }}</p>
+        <span class="meta">{{ cat.totalConteudos }} conteúdos</span>
+      </a>
+    }
+  </div>
+</section>

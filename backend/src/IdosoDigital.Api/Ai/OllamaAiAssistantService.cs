@@ -19,6 +19,7 @@ public sealed class AiOptions
 public interface IAiAssistantService
 {
     Task<AiChatResult> AskAsync(string pergunta, CancellationToken cancellationToken = default);
+    Task<AiChatResult> AskWithSystemAsync(string systemPrompt, string userMessage, CancellationToken cancellationToken = default);
 }
 
 public sealed record AiChatResult(string Resposta, string Provider, bool UsouMock);
@@ -55,38 +56,62 @@ public sealed class OllamaAiAssistantService : IAiAssistantService
     {
         try
         {
-            var request = new OllamaChatRequest(
-                _options.Model,
-                [
-                    new OllamaMessage("system", _systemPrompt),
-                    new OllamaMessage("user", pergunta)
-                ],
-                Stream: false);
-
-            using var content = new StringContent(
-                JsonSerializer.Serialize(request),
-                Encoding.UTF8,
-                "application/json");
-
-            using var response = await _httpClient.PostAsync("/api/chat", content, cancellationToken);
-            response.EnsureSuccessStatusCode();
-
-            await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
-            var payload = await JsonSerializer.DeserializeAsync<OllamaChatResponse>(stream, cancellationToken: cancellationToken);
-
-            var resposta = payload?.Message?.Content?.Trim();
-            if (string.IsNullOrWhiteSpace(resposta))
-            {
-                throw new InvalidOperationException("Ollama retornou resposta vazia.");
-            }
-
-            return new AiChatResult(resposta, "Ollama", false);
+            return await EnviarAsync(_systemPrompt, pergunta, cancellationToken);
         }
         catch (Exception ex) when (_options.UseMockWhenUnavailable)
         {
             _logger.LogWarning(ex, "Ollama indisponível. Usando resposta mock educativa.");
             return new AiChatResult(MockResposta(pergunta), "Mock", true);
         }
+    }
+
+    public async Task<AiChatResult> AskWithSystemAsync(
+        string systemPrompt,
+        string userMessage,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            return await EnviarAsync(systemPrompt, userMessage, cancellationToken);
+        }
+        catch (Exception ex) when (_options.UseMockWhenUnavailable)
+        {
+            _logger.LogWarning(ex, "Ollama indisponível para geração estruturada.");
+            return new AiChatResult(string.Empty, "Mock", true);
+        }
+    }
+
+    private async Task<AiChatResult> EnviarAsync(
+        string systemPrompt,
+        string userMessage,
+        CancellationToken cancellationToken)
+    {
+        var request = new OllamaChatRequest(
+            _options.Model,
+            [
+                new OllamaMessage("system", systemPrompt),
+                new OllamaMessage("user", userMessage)
+            ],
+            Stream: false);
+
+        using var content = new StringContent(
+            JsonSerializer.Serialize(request),
+            Encoding.UTF8,
+            "application/json");
+
+        using var response = await _httpClient.PostAsync("/api/chat", content, cancellationToken);
+        response.EnsureSuccessStatusCode();
+
+        await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
+        var payload = await JsonSerializer.DeserializeAsync<OllamaChatResponse>(stream, cancellationToken: cancellationToken);
+
+        var resposta = payload?.Message?.Content?.Trim();
+        if (string.IsNullOrWhiteSpace(resposta))
+        {
+            throw new InvalidOperationException("Ollama retornou resposta vazia.");
+        }
+
+        return new AiChatResult(resposta, "Ollama", false);
     }
 
     private static string MockResposta(string pergunta)

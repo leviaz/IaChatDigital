@@ -1,17 +1,19 @@
 import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ChatApiService, ChatResumo, Mensagem } from '../../services/chat-api.service';
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss'
 })
 export class ChatComponent implements OnInit {
   private readonly chatApi = inject(ChatApiService);
+  private readonly route = inject(ActivatedRoute);
 
   @ViewChild('threadEl') threadEl?: ElementRef<HTMLElement>;
 
@@ -23,6 +25,8 @@ export class ChatComponent implements OnInit {
   mensagens: Mensagem[] = [];
   feedbackMsg: string | null = null;
   feedbackMensagemId: string | null = null;
+  private pendentePergunta: string | null = null;
+  private forcarNovoChat = false;
   sugestoes = [
     'Como faço um PIX?',
     'Esse SMS é golpe?',
@@ -35,7 +39,14 @@ export class ChatComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.carregarChats(true);
+    const pergunta = this.route.snapshot.queryParamMap.get('pergunta');
+    this.forcarNovoChat = this.route.snapshot.queryParamMap.get('novo') === '1';
+    if (pergunta) {
+      this.pendentePergunta = pergunta;
+      this.pergunta = pergunta;
+    }
+
+    this.carregarChats(!this.forcarNovoChat);
   }
 
   novoChat(): void {
@@ -44,7 +55,11 @@ export class ChatComponent implements OnInit {
     this.chatApi.criarChat().subscribe({
       next: (chat) => {
         this.chats = [chat, ...this.chats.filter((c) => c.id !== chat.id)];
-        this.abrirChat(chat.id);
+        this.abrirChat(chat.id, false);
+        if (this.pendentePergunta) {
+          this.pergunta = this.pendentePergunta;
+          this.pendentePergunta = null;
+        }
       },
       error: () => {
         this.erro = 'Não foi possível criar um novo chat.';
@@ -52,11 +67,14 @@ export class ChatComponent implements OnInit {
     });
   }
 
-  abrirChat(id: string): void {
+  abrirChat(id: string, limparPendente = true): void {
     this.chatAtivoId = id;
     this.erro = null;
     this.feedbackMsg = null;
     this.feedbackMensagemId = null;
+    if (limparPendente) {
+      this.pendentePergunta = null;
+    }
 
     this.chatApi.obterChat(id).subscribe({
       next: (detalhe) => {
@@ -190,7 +208,8 @@ export class ChatComponent implements OnInit {
     this.chatApi.listarChats().subscribe({
       next: (lista) => {
         this.chats = lista;
-        if (lista.length === 0) {
+        if (lista.length === 0 || this.forcarNovoChat) {
+          this.forcarNovoChat = false;
           this.novoChat();
           return;
         }

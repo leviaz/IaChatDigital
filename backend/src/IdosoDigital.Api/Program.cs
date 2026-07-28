@@ -52,6 +52,7 @@ builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptio
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped<IdosoDigital.Api.Exercicios.IExercicioService, IdosoDigital.Api.Exercicios.ExercicioService>();
 
 builder.Services.AddHttpClient<IAiAssistantService, OllamaAiAssistantService>((sp, client) =>
 {
@@ -125,7 +126,8 @@ using (var scope = app.Services.CreateScope())
     try
     {
         await db.Database.MigrateAsync();
-        logger.LogInformation("Banco de dados migrado com sucesso (LocalDB).");
+        await BibliotecaSeed.EnsureSeedAsync(db);
+        logger.LogInformation("Banco de dados migrado e biblioteca educativa carregada.");
     }
     catch (Exception ex)
     {
