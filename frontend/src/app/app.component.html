@@ -1,9 +1,18 @@
 <header class="site-header">
   <div class="id-container header-inner">
-    <div>
-      <a class="brand" routerLink="/inicio">Idoso Digital IA</a>
-      <p class="tagline">Ajuda simples e segura para usar o celular e a internet</p>
-    </div>
+    <a class="brand" routerLink="/inicio" aria-label="Idoso Digital IA — início">
+      <img
+        class="brand-logo"
+        src="logo-idoso-digital.png"
+        width="72"
+        height="72"
+        alt=""
+      />
+      <span class="brand-text">
+        <span class="brand-title">Idoso Digital IA</span>
+        <span class="tagline">Ajuda simples e segura para usar o celular e a internet</span>
+      </span>
+    </a>
 
     <nav class="nav" aria-label="Principal">
       @if (autenticado) {
@@ -21,6 +30,6 @@
   </div>
 </header>
 
-<main>
+<main class="site-main">
   <router-outlet />
 </main>

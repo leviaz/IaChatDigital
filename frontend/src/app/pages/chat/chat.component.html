@@ -48,7 +48,7 @@
         @if (mensagens.length === 0 && !loading) {
           <div class="empty-state">
             <p>Olá! Em que posso ajudar hoje?</p>
-            <p class="empty-hint">Escolha uma sugestão abaixo ou digite sua pergunta.</p>
+            <p class="empty-hint">Escolha uma sugestão, digite ou toque em Falar.</p>
           </div>
         }
 
@@ -68,6 +68,16 @@
                   (modo demonstração)
                 }
               </p>
+              @if (sinteseDisponivel) {
+                <button
+                  type="button"
+                  class="id-btn id-btn--secondary ouvir-btn"
+                  (click)="ouvirResposta(item)"
+                  [attr.aria-pressed]="lendoId === item.id"
+                >
+                  {{ lendoId === item.id ? 'Parar leitura' : 'Ouvir resposta' }}
+                </button>
+              }
             </div>
 
             <div class="feedback">
@@ -119,16 +129,29 @@
         </div>
 
         <label class="sr-only" for="pergunta">Sua pergunta</label>
-        <div class="composer-bar">
+        <div class="composer-bar" [class.listening]="ouvindo">
           <textarea
             id="pergunta"
             class="id-input pergunta"
             rows="2"
             [(ngModel)]="pergunta"
             [disabled]="loading"
-            placeholder="Digite sua pergunta..."
+            [placeholder]="ouvindo ? 'Ouvindo… fale agora' : 'Digite ou fale sua pergunta...'"
             (keydown)="onKeydown($event)"
           ></textarea>
+          <button
+            class="id-btn id-btn--secondary mic-btn"
+            type="button"
+            (click)="alternarVoz()"
+            [disabled]="loading"
+            [class.ouvindo]="ouvindo"
+            [attr.aria-pressed]="ouvindo"
+            [attr.aria-label]="ouvindo ? 'Parar microfone' : 'Falar pergunta'"
+            [title]="vozDisponivel ? (ouvindo ? 'Parar' : 'Falar') : 'Voz não disponível neste navegador'"
+          >
+            <span class="mic-icon" aria-hidden="true"></span>
+            <span>{{ ouvindo ? 'Parar' : 'Falar' }}</span>
+          </button>
           <button
             class="id-btn send-btn"
             type="button"
@@ -138,7 +161,10 @@
             {{ loading ? '...' : 'Enviar' }}
           </button>
         </div>
-        <p class="composer-hint">Enter envia · Shift+Enter pula linha</p>
+        @if (statusVoz) {
+          <p class="voz-status" role="status" aria-live="polite">{{ statusVoz }}</p>
+        }
+        <p class="composer-hint">Falar usa o microfone · Enter envia · Shift+Enter pula linha</p>
         <a class="praticar-link" routerLink="/praticar" [queryParams]="{ categoria: 'golpes' }">
           Quer praticar com um exercício?
         </a>

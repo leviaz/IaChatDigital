@@ -1,12 +1,40 @@
-<section class="inicio id-container">
-  <h1>Olá, {{ usuario?.nome || 'bem-vindo(a)' }}!</h1>
-  <p class="lead">
-    Aprenda com a biblioteca ou pergunte à assistente sobre PIX, WhatsApp, bancos, golpes e SUS.
-  </p>
+<section class="inicio id-container id-animate-in">
+  <div class="hero">
+    <img
+      class="hero-logo"
+      src="logo-idoso-digital.png"
+      width="120"
+      height="120"
+      alt="Logo Idoso Digital IA"
+    />
+    <div>
+      <p class="eyebrow">Idoso Digital IA</p>
+      <h1>Olá, {{ usuario?.nome || 'bem-vindo(a)' }}!</h1>
+      <p class="lead">
+        Aprenda com a biblioteca ou pergunte à assistente sobre PIX, WhatsApp, bancos, golpes e SUS.
+      </p>
+    </div>
+  </div>
+
+  <div class="path-grid">
+    <a class="id-card-interactive path" routerLink="/biblioteca">
+      <h2>Biblioteca</h2>
+      <p>Textos simples por tema, no seu ritmo.</p>
+      <span class="path-cta">Abrir biblioteca</span>
+    </a>
+    <a class="id-card-interactive path" routerLink="/chat">
+      <h2>Perguntar</h2>
+      <p>Tire dúvidas com respostas em passos curtos.</p>
+      <span class="path-cta">Falar com a assistente</span>
+    </a>
+    <a class="id-card-interactive path" routerLink="/praticar">
+      <h2>Praticar</h2>
+      <p>Exercícios com A, B e C para reforçar o aprendizado.</p>
+      <span class="path-cta">Começar exercício</span>
+    </a>
+  </div>
 
   <div class="actions">
-    <a class="id-btn" routerLink="/biblioteca">Abrir biblioteca</a>
-    <a class="id-btn id-btn--secondary" routerLink="/chat">Fazer uma pergunta</a>
     <button class="id-btn id-btn--secondary" type="button" (click)="sair()">Sair</button>
     <button class="id-btn id-btn--secondary" type="button" (click)="excluirConta()" [disabled]="excluindo">
       {{ excluindo ? 'Excluindo...' : 'Excluir minha conta' }}

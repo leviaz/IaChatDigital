@@ -25,6 +25,6 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.brand')?.textContent).toContain('Idoso Digital IA');
+    expect(compiled.querySelector('.brand-title')?.textContent).toContain('Idoso Digital IA');
   });
 });

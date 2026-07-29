@@ -1,8 +1,7 @@
-@import url("https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap");
 @import "./styles/tokens";
 @import "bootstrap/scss/bootstrap";
 
-/* Sobrescreve bases do Bootstrap para o público idoso */
 body {
   font-family: var(--id-font-family);
   font-size: var(--id-font-size-base);
@@ -21,4 +20,10 @@ body {
   min-height: var(--id-touch-min);
   font-size: var(--id-font-size-lg);
   border-width: 2px;
+}
+
+.alert {
+  border-width: 2px;
+  border-radius: var(--id-radius);
+  font-size: var(--id-font-size-lg);
 }

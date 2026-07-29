@@ -8,6 +8,7 @@
   display: grid;
   gap: var(--id-space-2);
   max-width: 44rem;
+  animation: id-fade-up 480ms var(--id-ease) both;
 }
 
 .biblio-header h1 {
@@ -24,6 +25,19 @@
   gap: var(--id-space-3);
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
 }
+
+.cat-card {
+  animation: id-fade-up 520ms var(--id-ease) both;
+  min-height: 10.5rem;
+}
+
+.cat-card:nth-child(2) { animation-delay: 50ms; }
+.cat-card:nth-child(3) { animation-delay: 100ms; }
+.cat-card:nth-child(4) { animation-delay: 150ms; }
+.cat-card:nth-child(5) { animation-delay: 200ms; }
+.cat-card:nth-child(6) { animation-delay: 250ms; }
+.cat-card:nth-child(7) { animation-delay: 300ms; }
+.cat-card:nth-child(8) { animation-delay: 350ms; }
 
 .cat-card h2 {
   margin: 0 0 0.5rem;

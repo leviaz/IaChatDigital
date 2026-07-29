@@ -3,6 +3,7 @@
   display: grid;
   gap: var(--id-space-3);
   max-width: 36rem;
+  animation: id-fade-up 480ms var(--id-ease) both;
 }
 
 .lead {
@@ -16,7 +17,8 @@
   padding: var(--id-space-4);
   border: 2px solid var(--id-color-border);
   border-radius: var(--id-radius);
-  background: var(--id-color-surface);
+  background: linear-gradient(180deg, #ffffff, #f7fbf8);
+  animation: id-pop 520ms var(--id-ease) both;
 }
 
 label {

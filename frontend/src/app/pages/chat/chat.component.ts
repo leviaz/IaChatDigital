@@ -1,8 +1,9 @@
-import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ChatApiService, ChatResumo, Mensagem } from '../../services/chat-api.service';
+import { VozService } from '../../services/voz.service';
 
 @Component({
   selector: 'app-chat',
@@ -11,9 +12,10 @@ import { ChatApiService, ChatResumo, Mensagem } from '../../services/chat-api.se
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss'
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, OnDestroy {
   private readonly chatApi = inject(ChatApiService);
   private readonly route = inject(ActivatedRoute);
+  private readonly voz = inject(VozService);
 
   @ViewChild('threadEl') threadEl?: ElementRef<HTMLElement>;
 
@@ -25,6 +27,10 @@ export class ChatComponent implements OnInit {
   mensagens: Mensagem[] = [];
   feedbackMsg: string | null = null;
   feedbackMensagemId: string | null = null;
+  ouvindo = false;
+  statusVoz: string | null = null;
+  lendoId: string | null = null;
+  private rascunhoAntesVoz = '';
   private pendentePergunta: string | null = null;
   private forcarNovoChat = false;
   sugestoes = [
@@ -38,6 +44,14 @@ export class ChatComponent implements OnInit {
     return this.chats.find((c) => c.id === this.chatAtivoId)?.titulo ?? 'Novo chat';
   }
 
+  get vozDisponivel(): boolean {
+    return this.voz.suportado;
+  }
+
+  get sinteseDisponivel(): boolean {
+    return this.voz.sinteseSuportada;
+  }
+
   ngOnInit(): void {
     const pergunta = this.route.snapshot.queryParamMap.get('pergunta');
     this.forcarNovoChat = this.route.snapshot.queryParamMap.get('novo') === '1';
@@ -47,6 +61,11 @@ export class ChatComponent implements OnInit {
     }
 
     this.carregarChats(!this.forcarNovoChat);
+  }
+
+  ngOnDestroy(): void {
+    this.voz.pararDitacao();
+    this.voz.pararFala();
   }
 
   novoChat(): void {
@@ -72,6 +91,7 @@ export class ChatComponent implements OnInit {
     this.erro = null;
     this.feedbackMsg = null;
     this.feedbackMensagemId = null;
+    this.pararVoz();
     if (limparPendente) {
       this.pendentePergunta = null;
     }
@@ -122,6 +142,7 @@ export class ChatComponent implements OnInit {
   }
 
   usarSugestao(texto: string): void {
+    this.pararVoz();
     this.pergunta = texto;
   }
 
@@ -132,16 +153,89 @@ export class ChatComponent implements OnInit {
     }
   }
 
+  alternarVoz(): void {
+    if (this.loading) {
+      return;
+    }
+
+    if (!this.vozDisponivel) {
+      this.statusVoz = 'Seu navegador não permite falar. Use Chrome ou Edge.';
+      return;
+    }
+
+    if (this.ouvindo) {
+      this.voz.pararDitacao();
+      this.ouvindo = false;
+      this.statusVoz = 'Microfone parado.';
+      return;
+    }
+
+    this.rascunhoAntesVoz = this.pergunta.trim();
+    this.erro = null;
+    this.ouvindo = true;
+    this.statusVoz = 'Ouvindo… fale agora.';
+
+    this.voz.iniciarDitacao({
+      onParcial: (texto) => {
+        this.pergunta = this.juntarTexto(this.rascunhoAntesVoz, texto);
+      },
+      onFinal: (texto) => {
+        this.pergunta = this.juntarTexto(this.rascunhoAntesVoz, texto);
+        this.rascunhoAntesVoz = this.pergunta;
+        this.statusVoz = 'Pronto. Confira o texto e toque em Enviar.';
+      },
+      onErro: (tipo) => {
+        this.ouvindo = false;
+        this.statusVoz = this.mensagemErroVoz(tipo);
+      },
+      onFim: () => {
+        this.ouvindo = false;
+        if (this.statusVoz === 'Ouvindo… fale agora.') {
+          this.statusVoz = this.pergunta.trim()
+            ? 'Pronto. Confira o texto e toque em Enviar.'
+            : 'Não entendi. Toque em Falar e tente de novo.';
+        }
+      }
+    });
+  }
+
+  ouvirResposta(msg: Mensagem): void {
+    if (!this.sinteseDisponivel) {
+      this.statusVoz = 'Seu navegador não lê texto em voz alta.';
+      return;
+    }
+
+    if (this.lendoId === msg.id) {
+      this.voz.pararFala();
+      this.lendoId = null;
+      this.statusVoz = 'Leitura parada.';
+      return;
+    }
+
+    this.voz.pararFala();
+    this.lendoId = msg.id;
+    this.statusVoz = 'Lendo a resposta em voz alta…';
+    this.voz.falar(msg.resposta, () => {
+      if (this.lendoId === msg.id) {
+        this.lendoId = null;
+        this.statusVoz = null;
+      }
+    });
+  }
+
   enviar(): void {
     const texto = this.pergunta.trim();
     if (!texto || this.loading) {
       return;
     }
 
+    this.pararVoz();
+
     const enviarNoChat = (chatId: string) => {
       this.loading = true;
       this.erro = null;
       this.feedbackMsg = null;
+      this.statusVoz = null;
       this.scrollToBottom();
 
       this.chatApi.enviarMensagem(chatId, texto).subscribe({
@@ -202,6 +296,38 @@ export class ChatComponent implements OnInit {
         this.feedbackMsg = 'Não foi possível salvar sua opinião agora.';
       }
     });
+  }
+
+  private pararVoz(): void {
+    this.voz.pararDitacao();
+    this.voz.pararFala();
+    this.ouvindo = false;
+    this.lendoId = null;
+  }
+
+  private juntarTexto(base: string, falado: string): string {
+    if (!base) {
+      return falado;
+    }
+    if (!falado) {
+      return base;
+    }
+    return `${base} ${falado}`.replace(/\s+/g, ' ').trim();
+  }
+
+  private mensagemErroVoz(tipo: string): string {
+    switch (tipo) {
+      case 'nao-suportado':
+        return 'Seu navegador não permite falar. Use Chrome ou Edge.';
+      case 'permissao':
+        return 'Permita o uso do microfone para falar sua pergunta.';
+      case 'sem-audio':
+        return 'Não ouvi nada. Toque em Falar e tente de novo.';
+      case 'rede':
+        return 'Sem conexão para reconhecer a voz. Tente de novo.';
+      default:
+        return 'Não foi possível usar o microfone agora.';
+    }
   }
 
   private carregarChats(abrirMaisRecente: boolean): void {
